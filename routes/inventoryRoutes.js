@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 
 // import middleware
-const verifyToken = require('../middleware/authMiddleware'); 
+const verifyToken = require('../middleware/authMiddleware');
 
 // import fungsi dari controller
-const { getLowStock} = require('../controllers/inventoryController');
+const { getLowStock } = require('../controllers/inventoryController');
 
 // rute inventory alert : untuk melihat daftar produk dengan stok rendah
-router.get('/low-stock', verifyToken,getLowStock);
+router.get('/low-stock', verifyToken, getLowStock);
 
 module.exports = router;

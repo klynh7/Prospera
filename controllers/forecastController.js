@@ -1,26 +1,37 @@
-const db = require('../config/db');
+const { Transaction } = require('../models');
+const { Sequelize } = require('sequelize');
+
 // mengambil prediksi penjualan harian (Sales Forecasting)
 const getForecast = async (req, res) => {
   try {
     const userId = req.user.id;
-    // query untuk menghitung rata-rata penjualan harian 
-    // alurnya : hitung total penjualan per harinya (daily_total) lalu ambil rata-rata dari semua hari tersebut 
-    const [rows] = await db.query(`
-      SELECT 
-        AVG(daily_total) AS prediction
-      FROM (
-        SELECT 
-          DATE(transaction_datetime) AS date,
-          SUM(total_amount) AS daily_total
-        FROM Transactions
-        WHERE user_id_fk = ?
-        GROUP BY DATE(transaction_datetime)
-      ) t
-    `, [userId]);
+
+    // ambil total penjualan per hari
+    const dailyData = await Transaction.findAll({
+      attributes: [
+        [Sequelize.fn('DATE', Sequelize.col('transaction_datetime')), 'date'],
+        [Sequelize.fn('SUM', Sequelize.col('total_amount')), 'daily_total']
+      ],
+      where: {
+        user_id_fk: userId
+      },
+      group: [Sequelize.fn('DATE', Sequelize.col('transaction_datetime'))],
+      raw: true
+    });
+
+    // hitung rata-rata (AVG) manual di JS
+    let total = 0;
+    dailyData.forEach(item => {
+      total += Number(item.daily_total);
+    });
+
+    const prediction = dailyData.length > 0
+      ? Math.round(total / dailyData.length)
+      : 0;
 
     res.status(200).json({
       message: "Prediksi penjualan harian",
-      prediction: Math.round(rows[0]?.prediction || 0)
+      prediction: prediction
     });
 
   } catch (error) {
@@ -28,4 +39,5 @@ const getForecast = async (req, res) => {
     res.status(500).json({ message: "Terjadi kesalahan internal pada server." });
   }
 };
+
 module.exports = { getForecast };

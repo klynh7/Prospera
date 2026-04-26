@@ -3,26 +3,29 @@ const express = require('express');
 const cors = require('cors');
 
 // Mengimpor koneksi Sequelize dari folder models (Menggantikan config/db lama)
-const { sequelize } = require('./models'); 
+const { sequelize } = require('./models');
 
 const app = express();
 
 // Konfigurasi middleware standar
-app.use(cors()); 
-app.use(express.json()); 
+app.use(cors());
+app.use(express.json());
 
 // 1. Mengimpor rute aplikasi
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
+const inventoryRoutes = require('./routes/inventoryRoutes');
+const forecastRoutes = require('./routes/forecastRoutes');
 
 // 2. Mendaftarkan rute antarmuka pemrograman aplikasi (API) ke dalam peladen (server)
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/analytics', analyticsRoutes);
-
+app.use('/api/inventory', inventoryRoutes);
+app.use('/api/forecast', forecastRoutes);
 
 // Rute pengujian peladen (Root)
 app.get('/', (req, res) => {
