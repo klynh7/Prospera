@@ -7,10 +7,10 @@ const { register, deleteUser, login } = require('../controllers/authController')
 // Rute untuk registrasi akun baru
 router.post('/register', register);
 
-// Rute untuk masuk (login) ke dalam sistem
+// Rute untuk masuk 
 router.post('/login', login);
 
-// Rute untuk menghapus akun (ambil ID otomatis dari token)
+// Rute untuk menghapus akun 
 router.delete('/delete', verifyToken, deleteUser);
 
 module.exports = router;

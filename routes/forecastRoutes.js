@@ -7,7 +7,7 @@ const verifyToken = require('../middleware/authMiddleware');
 // import fungsi dari controller
 const { getForecast } = require('../controllers/forecastController');
 
-// rute sales forecast : untuk melihat prediksi penjualan harian
+// rute sales forecast 
 router.get('/', verifyToken, getForecast);
 
 module.exports = router;

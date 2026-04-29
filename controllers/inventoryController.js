@@ -6,16 +6,16 @@ const getLowStock = async (req, res) => {
         console.log(req.user);
 
         const userId = req.user.id || req.user.user_id;
-        const stockLimit = req.query.limit || 5;
+        const stockLimit = req.query.limit || 25;
 
         const products = await Product.findAll({
             where: {
                 user_id_fk: userId,
                 product_stock: {
-                    [Op.lt]: stockLimit
+                    [Op.lte]: stockLimit
                 }
             },
-            attributes: ['product_name', 'product_stock'],
+            attributes: ['product_id', 'product_name', 'product_stock'],
             order: [['product_stock', 'ASC']]
         });
 

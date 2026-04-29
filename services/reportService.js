@@ -17,7 +17,6 @@ class ExcelReport extends BaseReport {
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('Laporan Prospera');
 
-        // Setup kolom (A sampai F)
         sheet.getColumn('A').width = 30; // Nama Produk
         sheet.getColumn('B').width = 12; // Terjual
         sheet.getColumn('C').width = 18; // Harga Satuan
@@ -25,7 +24,7 @@ class ExcelReport extends BaseReport {
         sheet.getColumn('E').width = 18; // Profit (Rp)
         sheet.getColumn('F').width = 15; // Margin (%)
 
-        // --- HEADER & SUMMARY ---
+        //HEADER & SUMMARY
         sheet.addRow(['LAPORAN PENJUALAN PROSPERA']).font = { bold: true, size: 14 };
         sheet.addRow([]); 
         
@@ -36,16 +35,15 @@ class ExcelReport extends BaseReport {
         sheet.addRow(['Total Profit', this.formatRupiah(this.summary.total_profit)]);
         sheet.addRow([]);
 
-        // --- STATUS BREAKDOWN ---
+        //STATUS BREAKDOWN
         sheet.addRow(['STATUS TRANSAKSI']).font = { bold: true };
         sheet.addRow(['Sukses', this.breakdown.success]);
         sheet.addRow(['Dibatalkan', this.breakdown.cancelled]);
         sheet.addRow([]);
 
-        // --- TABEL DETAIL PRODUK ---
+        //TABEL DETAIL PRODUK
         sheet.addRow(['RINCIAN ANALISIS PRODUK']).font = { bold: true };
         
-        // Header Tabel dengan kolom baru
         const tableHeader = sheet.addRow([
             'Nama Produk', 
             'Terjual', 
@@ -82,9 +80,7 @@ class ExcelReport extends BaseReport {
     }
 }
 
-// ... (Kodingan class BaseReport dan ExcelReport biarin aja) ...
 
-// 3. CLASS ANAK - Khusus untuk CSV (Data Mentah biar gampang diolah)
 class CsvReport extends BaseReport {
     async generate() {
         const workbook = new ExcelJS.Workbook();
@@ -93,7 +89,7 @@ class CsvReport extends BaseReport {
         // Header CSV
         sheet.addRow(['Nama Produk', 'Terjual', 'Harga Satuan', 'Subtotal', 'Profit', 'Margin (%)']);
 
-        // Isi Data (Angka murni tanpa Rp biar bisa di-sum di sistem lain)
+        // Isi Data 
         if (this.details && this.details.length > 0) {
             this.details.forEach(item => {
                 sheet.addRow([
@@ -107,11 +103,9 @@ class CsvReport extends BaseReport {
             });
         }
 
-        // Generate file berbentuk CSV
         return await workbook.csv.writeBuffer();
     }
 }
 
-// UBAH BARIS PALING BAWAH JADI BEGINI:
 module.exports = { ExcelReport, CsvReport };
 

@@ -2,8 +2,7 @@ const { Transaction, TransactionDetail, Product } = require("../models");
 const { Op, fn, col, literal } = require("sequelize");
 const { ExcelReport, CsvReport } = require("../services/reportService"); // <-- IMPORT SERVICE EXCEL & CSV
 
-// HELPER: FILTER TANGGAL (FIX JAM 23:59:59)
-// ============================
+
 const getDateFilter = (startDate, endDate) => {
     if (startDate && endDate) {
         const start = new Date(startDate);
@@ -22,14 +21,13 @@ const getDateFilter = (startDate, endDate) => {
 };
 
 
-// 1. SUMMARY (ENTERPRISE LEVEL + TABEL DETAIL)
-// ============================
+// 1. SUMMARY 
 const getSummary = async (req, res) => {
     try {
         const { startDate, endDate } = req.query;
         const userId = req.user.id;
 
-        // --- A. MENGHITUNG STATUS BREAKDOWN (Semua Status) ---
+        // filter status
         const statusData = await Transaction.findAll({
             where: {
                 ...getDateFilter(startDate, endDate),
@@ -51,7 +49,7 @@ const getSummary = async (req, res) => {
             total_transaction_all += count;
         });
 
-        // --- B. MENGHITUNG FINANSIAL (Hanya yang Success) ---
+        //menghitung financial
         const financialData = await TransactionDetail.findAll({
             include: [{
                 model: Transaction,
@@ -76,7 +74,7 @@ const getSummary = async (req, res) => {
         const total_profit = parseFloat(fin.total_profit) || 0;
         const average_sale = success > 0 ? Math.round(revenue / success) : 0;
 
-        // --- C. MENGHITUNG REVENUE GROWTH (%) ---
+        // menghitung revenue growth
         let revenue_growth = "N/A"; 
         if (startDate && endDate) {
             const start = new Date(startDate);
@@ -115,7 +113,7 @@ const getSummary = async (req, res) => {
             }
         }
 
-        // --- D. MENGAMBIL TABEL DETAIL PRODUK ---
+        // mengambil tabel transaction detail
         const detailsData = await TransactionDetail.findAll({
             attributes: [
                 [fn("SUM", col("quantity")), "qty"],
@@ -148,7 +146,6 @@ const getSummary = async (req, res) => {
             subtotal: parseFloat(item.subtotal) || 0
         }));
 
-        // --- E. SUSUN RESPONSE JSON ---
         res.json({
             summary: {
                 total_transaction: total_transaction_all,
@@ -173,7 +170,6 @@ const getSummary = async (req, res) => {
 
 
 // 2. PROFIT & LOSS
-// ============================
 const getProfit = async (req, res) => {
     try {
         const { startDate, endDate } = req.query;
@@ -228,7 +224,6 @@ const getProfit = async (req, res) => {
 };
 
 // 3. TOP PRODUCT
-// ============================
 const getTopProduct = async (req, res) => {
     try {
         const { startDate, endDate, limit } = req.query;
@@ -262,6 +257,7 @@ const getTopProduct = async (req, res) => {
         });
 
         res.json(rows.map(item => ({
+            product_id: item["Product.product_id"],
             product_name: item["Product.product_name"],
             sold: parseInt(item.sold) || 0,
             revenue: parseFloat(item.revenue) || 0
@@ -272,7 +268,6 @@ const getTopProduct = async (req, res) => {
 };
 
 // 4. MONTHLY REPORT
-// ============================
 const getMonthly = async (req, res) => {
     try {
         const { startDate, endDate } = req.query;
@@ -308,15 +303,13 @@ const getMonthly = async (req, res) => {
     }
 };
 
-// 5. EXPORT EXCEL
-// ============================
+// 5. EXPORT TO EXCEL
 const exportSummaryExcel = async (req, res) => {
     try {
         const { startDate, endDate } = req.query;
-        // userId ini butuh authMiddleware nyala biar gak error
         const userId = req.user.id; 
 
-        // --- A. TARIK STATUS TRANSAKSI ---
+        //tarik status transaksi
         const statusData = await Transaction.findAll({
             where: { ...getDateFilter(startDate, endDate), user_id_fk: userId },
             attributes: ['status', [fn('COUNT', col('*')), 'count']],
@@ -333,7 +326,7 @@ const exportSummaryExcel = async (req, res) => {
             total_transaction_all += count;
         });
 
-        // --- B. TARIK DATA FINANSIAL ---
+        // tarik data finansial
         const financialData = await TransactionDetail.findAll({
             include: [{
                 model: Transaction, attributes: [],
@@ -352,7 +345,7 @@ const exportSummaryExcel = async (req, res) => {
         const revenue = parseFloat(fin.revenue) || 0;
         const total_profit = parseFloat(fin.total_profit) || 0;
 
-        // --- C. TARIK TABEL DETAIL PRODUK (VERSI ELITE: NOMINAL & MARGIN) ---
+        // hitung nominal dan margin
         const detailsData = await TransactionDetail.findAll({
             attributes: [
                 [fn("SUM", col("quantity")), "qty"],
@@ -377,7 +370,6 @@ const exportSummaryExcel = async (req, res) => {
             const subtotal = parseFloat(item.subtotal) || 0;
             const profit = parseFloat(item.total_profit_product) || 0;
             
-            // Hitung Margin Persentase: (Profit / Omzet) * 100
             const margin = subtotal > 0 ? ((profit / subtotal) * 100).toFixed(1) : 0;
 
             return {
@@ -386,11 +378,10 @@ const exportSummaryExcel = async (req, res) => {
                 unitPrice: parseFloat(item.unit_price) || 0,
                 subtotal: subtotal,
                 profit: profit,
-                margin: margin + "%" // Format jadi string persentase
+                margin: margin + "%" 
             };
         });
 
-        // --- D. MASUKKAN KE CLASS OOP KITA ---
         const realDataDariDB = {
             summary: { total_transaction: total_transaction_all, items_sold: items_sold, revenue: revenue, total_profit: total_profit },
             status_breakdown: { success: success, pending: pending, cancelled: cancelled },
@@ -411,15 +402,11 @@ const exportSummaryExcel = async (req, res) => {
 };
 
 // 6. EXPORT CSV (TABEL DATAR)
-// ============================
 const exportSummaryCsv = async (req, res) => {
     try {
         const { startDate, endDate } = req.query;
-        // userId ini butuh authMiddleware nyala biar gak error
-        // const userId = req.user.id; 
-        const userId = 2;
+        const userId = req.user.id; 
 
-        // Tarik Data (Kita cuma butuh data Detail Produk untuk CSV)
         const detailsData = await TransactionDetail.findAll({
             attributes: [
                 [fn("SUM", col("quantity")), "qty"],
@@ -455,12 +442,10 @@ const exportSummaryCsv = async (req, res) => {
             };
         });
 
-        // Masukin ke Class OOP CsvReport
-        const realDataDariDB = { details: formattedDetails }; // CSV cuma butuh array details
+        const realDataDariDB = { details: formattedDetails }; 
         const report = new CsvReport(realDataDariDB);
         const fileBuffer = await report.generate();
 
-        // Kasih tau browser ini file CSV
         res.setHeader('Content-Type', 'text/csv');
         res.setHeader('Content-Disposition', 'attachment; filename="Laporan_Prospera.csv"');
         res.send(fileBuffer);
@@ -477,5 +462,5 @@ module.exports = {
     getTopProduct, 
     getMonthly,
     exportSummaryExcel,
-    exportSummaryCsv // <-- TAMBAHAN BARU
+    exportSummaryCsv 
 };

@@ -10,7 +10,7 @@ const { createTransaction, getTransactionHistory } = require('../controllers/tra
 // Rute Kasir: Untuk melakukan pembayaran/Checkout
 router.post('/checkout', verifyToken, createTransaction);
 
-// Rute Riwayat: Untuk melihat daftar transaksi/penjualan sebelumnya
+// Rute History: Untuk melihat daftar transaksi/penjualan sebelumnya
 router.get('/history', verifyToken, getTransactionHistory);
 
 module.exports = router;
