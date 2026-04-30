@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prospera - Fitur Pintar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .simple-card { border: 1px solid var(--border); border-radius: 8px; background: white; padding: 20px; height: auto; }
+        .alert-item { padding: 10px; border-bottom: 1px solid #eee; }
+        .alert-item:last-child { border-bottom: none; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo px-2"><i class="fas fa-layer-group"></i> <span>Prospera</span></div>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a href="analytics.html" class="nav-link"><i class="fas fa-layer-group"></i> Analisis Lengkap</a></li>
+            <li class="nav-item"><a href="bi-analytics.html" class="nav-link"><i class="fas fa-chart-bar"></i> 4.2 Analitik Bisnis</a></li>
+            <li class="nav-item"><a href="smart-predict.html" class="nav-link active"><i class="fas fa-robot"></i> 4.3 Fitur Pintar</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h3 class="fw-bold mb-4">4.3 Fitur Pintar</h3>
+
+        <div class="row g-4">
+            <!-- BUKA: 4.3.2 Sales Forecasting -->
+            <div class="col-md-5 d-flex">
+                <div class="simple-card shadow-sm flex-fill d-flex flex-column justify-content-center">
+                    <div class="text-muted small text-uppercase fw-bold mb-2">4.3.2 Sales Forecasting (Mei)</div>
+                    <div class="h2 fw-bold mb-2" id="forecast-revenue">Rp 0</div>
+                    <div class="small text-secondary">Perkiraan pendapatan untuk bulan Mei.</div>
+                </div>
+            </div>
+            <!-- TUTUP: 4.3.2 Sales Forecasting -->
+
+            <!-- BUKA: Inventaris & Saran Restock -->
+            <div class="col-md-7 d-flex">
+                <div class="simple-card shadow-sm border-start border-danger border-4 flex-fill">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-danger bg-opacity-10 text-danger p-2 rounded-circle me-3">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h5 class="fw-bold mb-0">Peringatan Inventaris</h5>
+                    </div>
+                    
+                    <div class="d-flex align-items-center">
+                        <div class="me-4 pe-4 border-end text-center">
+                            <div class="text-muted small mb-1">Produk Kritis</div>
+                            <div class="h2 fw-bold text-danger" id="critical-count">0</div>
+                        </div>
+                        <div id="inventory-alert-box" class="flex-grow-1 small">
+                            <!-- Otomatis muncul di sini -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="simple-card shadow-sm">
+                    <h5 class="fw-bold mb-4">Saran Pembelian Stok (Restock)</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle">
+                            <thead class="text-muted">
+                                <tr>
+                                    <th>Nama Barang</th>
+                                    <th>Stok Saat Ini</th>
+                                    <th>Kebutuhan Prediksi</th>
+                                    <th>Saran Restock</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stock-prediction-table">
+                                <!-- Diisi oleh JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- TUTUP: Inventaris & Saran Restock -->
+        </div>
+    </div>
+    <script src="js/logika-pintar.js"></script>
+    <script>
+        // Update tampilan tabel karena layout berubah
+        function updateTabelPintar() {
+            const container = document.getElementById('stock-prediction-table');
+            if(!container) return;
+            
+            container.innerHTML = dataPintar.inventaris.map(item => {
+                const disarankan = Math.ceil(item.rataBulanan * 1.2);
+                const perluDipesan = disarankan - item.saatIni;
+                
+                return `
+                    <tr>
+                        <td><div class="fw-bold">${item.nama}</div></td>
+                        <td>${item.saatIni} unit</td>
+                        <td>${disarankan} unit</td>
+                        <td><span class="badge bg-primary">+${perluDipesan} unit</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        // Jalankan setelah script utama dimuat
+        setTimeout(updateTabelPintar, 100);
+    </script>
+</body>
+</html>

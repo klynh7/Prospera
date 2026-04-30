@@ -1,0 +1,200 @@
+:root {
+    --blue-primary: #1E3A8A;        /* Sidebar / Header (Navy) */
+    --blue-medium: #2563EB;     /* Card & Chart (Modern) */
+    --blue-light: #3B82F6;      /* Highlight */
+    --green-primary: #22C55E;       /* Indikator Naik / Profit */
+    --green-medium: #16A34A;        /* Icon / Accent */
+    --green-light: #4ADE80;     /* Background Lembut */
+    --background: #F8FAFC;
+    --card: #F5F5F5;
+    --text-primary: #1F2937;
+    --text-secondary: #6B7280;
+    --border: #E5E7EB;
+}
+
+table thead th,
+table tbody td {
+    background-color: var(--card) !important;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text-primary);
+    overflow-x: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, var(--blue-primary) 0%, var(--green-medium) 100%);
+    color: white;
+    min-height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    padding: 2rem 1.5rem;
+}
+
+.main-content {
+    margin-left: 260px;
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+/* Sidebar Links - Scoped to sidebar only */
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.7) !important;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.8rem 1rem;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Stats Cards */
+.stat-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    background: var(--card);
+    height: 100%;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+    background-color: var(--card) !important;
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05) !important;
+    border: none !important;
+}
+
+.delta-up {
+    color: var(--green-primary);
+}
+
+.delta-down {
+    color: #EF4444;
+}
+
+/* Forecast Card */
+.forecast-card {
+    background: linear-gradient(135deg, var(--blue-primary), var(--blue-medium));
+    color: white;
+    border: none;
+}
+
+.btn-forecast {
+    background: white;
+    color: var(--blue-primary);
+    font-weight: 600;
+}
+
+.btn-forecast:hover {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--blue-primary);
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    background-color: var(--blue-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+@media (max-width: 992px) {
+    .sidebar {
+        width: 80px;
+        padding: 2rem 0.5rem;
+    }
+
+    .sidebar .nav-text,
+    .sidebar .logo span {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 80px;
+    }
+}
+
+.bi-card {
+    border-left: 4px solid var(--blue-medium);
+}
+
+.ai-forecast-card {
+    background: linear-gradient(135deg, #1E3A8A 0%, #312E81 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.ai-forecast-card::after {
+    content: '';
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+
+.ai-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(37, 99, 235, 0.02);
+}
+
+.btn-outline-primary {
+    border-color: var(--blue-medium);
+    color: var(--blue-medium);
+}
+
+.btn-outline-primary.active, 
+.btn-outline-primary:hover {
+    background-color: var(--blue-medium);
+    border-color: var(--blue-medium);
+    color: white;
+}
+
+#biTrendChart {
+    min-height: 350px;
+}
