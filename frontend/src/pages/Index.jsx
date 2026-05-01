@@ -1,11 +1,13 @@
 import { useMemo, useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import ModalExport from '../components/ModalExport';
 import TrendChart from '../components/TrendChart';
 import { apiFetch } from '../utils/api';
 import { formatRupiah } from '../utils/format';
 
 function Index() {
-    const [view, setView] = useState('overview');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const view = searchParams.get('view') || 'overview';
     const [period, setPeriod] = useState('monthly');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -16,6 +18,10 @@ function Index() {
         products: [],
         monthly: [],
     });
+
+    const setView = (newView) => {
+        setSearchParams({ view: newView });
+    };
 
     useEffect(() => {
         const fetchData = async () => {

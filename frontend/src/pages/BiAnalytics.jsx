@@ -1,10 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import TrendChart from '../components/TrendChart';
 import { apiFetch } from '../utils/api';
 import { formatRupiah } from '../utils/format';
 
 function BiAnalytics() {
-    const [view, setView] = useState('list');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const view = searchParams.get('view') || 'list';
     const [period, setPeriod] = useState('monthly');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -15,6 +17,10 @@ function BiAnalytics() {
         products: [],
         monthly: [],
     });
+
+    const setView = (newView) => {
+        setSearchParams({ view: newView });
+    };
 
     useEffect(() => {
         const fetchData = async () => {
