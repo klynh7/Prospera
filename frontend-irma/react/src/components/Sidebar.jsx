@@ -1,46 +1,27 @@
-import React from 'react';
+function Sidebar({ currentPage, onNavigate }) {
+    const menu = [
+        { id: 'index', label: 'Analisis Lengkap', icon: 'fas fa-layer-group' },
+        { id: 'bi-analytics', label: '4.2 Analitik Bisnis', icon: 'fas fa-chart-bar' },
+        { id: 'smart-predict', label: '4.3 Fitur Pintar', icon: 'fas fa-robot' },
+    ];
 
-const Sidebar = () => {
     return (
-        <div className="sidebar">
+        <aside className="sidebar">
             <div className="logo px-2">
-                <i className="fas fa-chart-line"></i>
-                <span>Prospera</span>
+                <i className="fas fa-layer-group"/><span>Prospera</span>
             </div>
             <ul className="nav flex-column">
-                <li className="nav-item">
-                    <a href="#" className="nav-link active">
-                        <i className="fas fa-th-large"></i>
-                        <span className="nav-text">Dashboard</span>
-                    </a>
-                </li>
-                <li className="nav-item">
-                    <a href="#" className="nav-link">
-                        <i className="fas fa-wallet"></i>
-                        <span className="nav-text">Transactions</span>
-                    </a>
-                </li>
-                <li className="nav-item">
-                    <a href="#" className="nav-link">
-                        <i className="fas fa-box"></i>
-                        <span className="nav-text">Products</span>
-                    </a>
-                </li>
-                <li className="nav-item">
-                    <a href="#" className="nav-link">
-                        <i className="fas fa-users"></i>
-                        <span className="nav-text">Customers</span>
-                    </a>
-                </li>
-                <li className="nav-item mt-auto">
-                    <a href="#" className="nav-link">
-                        <i className="fas fa-cog"></i>
-                        <span className="nav-text">Settings</span>
-                    </a>
-                </li>
+                {menu.map((item) => (
+                    <li className="nav-item" key={item.id}>
+                        <button className={`nav-link nav-button ${currentPage === item.id ? 'active' : ''}`} type="button" onClick={() => onNavigate(item.id)}>
+                            <i className={item.icon} />
+                            <span className="nav-text">{item.label}</span>
+                        </button>
+                    </li>
+                ))}
             </ul>
-        </div>
+        </aside>
     );
-};
+}
 
 export default Sidebar;
