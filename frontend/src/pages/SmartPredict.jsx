@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from '../utils/api';
 import { formatRupiah } from '../utils/format';
+import ErrorMessage from '../components/ErrorMessage';
 
 function SmartPredict() {
     const [loading, setLoading] = useState(true);
@@ -42,7 +43,7 @@ function SmartPredict() {
     }, []);
 
     if (loading) return <div className="p-5 text-center"><div className="spinner-border text-primary"></div><p className="mt-2">Memuat fitur pintar...</p></div>;
-    if (error) return <div className="alert alert-danger m-4">Error: {error}. Pastikan Anda sudah login dan server backend berjalan.</div>;
+    if (error) return <ErrorMessage error={error} />;
 
     const safetyStock = 25;
     const forecast = data.forecast;

@@ -1,0 +1,96 @@
+// Fungsi pembantu untuk memformat label tipe transaksi
+export const getTransactionTypeLabel = (transaction) => {
+    if (!transaction?.TransactionDetails || transaction.TransactionDetails.length === 0) {
+      return transaction.transaction_type ? transaction.transaction_type.toUpperCase() : "-";
+    }
+  
+    const uniqueTypes = Array.from(new Set(transaction.TransactionDetails.map((item) => item.transaction_type)));
+    return uniqueTypes.length === 1 ? uniqueTypes[0].toUpperCase() : "MIXED";
+};
+
+// Fungsi pencetak struk kasir (Isolated Print)
+export const printReceipt = (transactionData) => {
+    if (!transactionData) return;
+
+    const printWindow = window.open('', '', 'height=600,width=400');
+    printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Struk Transaksi</title>
+            <style>
+                /* Reset margin standar browser saat print */
+                @media print {
+                    @page { margin: 0; size: auto; }
+                    body { margin: 1cm; }
+                }
+                
+                body {
+                    font-family: 'Courier New', Courier, monospace;
+                    font-size: 12px;
+                    color: #000;
+                    background: #fff;
+                }
+                
+                /* Wadah pembungkus struk */
+                .ticket {
+                    width: 100%;
+                    max-width: 300px; /* Lebar maksimal menyerupai struk kasir */
+                    margin: 0 auto;   /* Posisikan di tengah jika diprint di kertas besar */
+                }
+                
+                .text-center { text-align: center; }
+                .fw-bold { font-weight: bold; }
+                .border-dashed { border-bottom: 1px dashed #000; margin: 10px 0; }
+                .d-flex { display: flex; justify-content: space-between; margin-bottom: 4px; }
+            </style>
+        </head>
+        <body>
+            <div class="ticket">
+                <div class="text-center">
+                    <h2 style="margin: 0 0 5px 0;">TOKO PROSPERA</h2>
+                    <div>Jl. Universitas Mikroskil, Medan</div>
+                    <div>Telp: 0812-3456-7890</div>
+                </div>
+                <div class="border-dashed"></div>
+                <div>
+                    <div class="d-flex"><span>Tgl:</span> <span>${transactionData.date}</span></div>
+                    <div class="d-flex"><span>Tipe:</span> <span>${transactionData.type === 'sell' ? 'Penjualan' : 'Restock'}</span></div>
+                </div>
+                <div class="border-dashed"></div>
+                <div>
+                    ${transactionData.items.map(item => `
+                        <div style="margin-bottom: 8px;">
+                            <div class="fw-bold">${item.product_name}</div>
+                            <div class="d-flex">
+                                <span>${item.quantity} x Rp${item.hargaJual}</span>
+                                <span>Rp${item.quantity * item.hargaJual}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="border-dashed"></div>
+                <div class="d-flex fw-bold" style="font-size: 14px;">
+                    <span>TOTAL</span>
+                    <span>Rp${transactionData.total}</span>
+                </div>
+                <div class="border-dashed"></div>
+                <div class="text-center" style="margin-top: 15px;">
+                    <div>Terima Kasih Atas Kunjungan Anda!</div>
+                    <div style="font-size: 10px; margin-top: 5px;">Powered by Prospera POS</div>
+                </div>
+            </div>
+        </body>
+        </html>
+    `);
+    
+    printWindow.document.close();
+    printWindow.focus();
+    
+    // Timeout dinaikkan sedikit (500ms) agar browser punya cukup waktu
+    // merender CSS sebelum layar Print muncul
+    setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+    }, 500);
+};

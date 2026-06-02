@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import TrendChart from '../components/TrendChart';
 import { apiFetch } from '../utils/api';
 import { formatRupiah } from '../utils/format';
-
+import ErrorMessage from '../components/ErrorMessage';
 function BiAnalytics() {
     const navigate = useNavigate();
     const [view, setView] = useState('list'); 
@@ -110,7 +110,7 @@ function BiAnalytics() {
     const closeModal = () => setModalConfig({ ...modalConfig, isOpen: false });
 
     if (loading) return <div className="p-5 text-center"><div className="spinner-border text-primary"></div><p className="mt-2">Memuat data BI...</p></div>;
-    if (error) return <div className="alert alert-danger m-4">Error: {error}. Pastikan Anda sudah login dan server backend berjalan.</div>;
+    if (error) return <ErrorMessage error={error} />;
 
     return (
         <>
