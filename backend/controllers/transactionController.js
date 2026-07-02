@@ -476,11 +476,14 @@ const exportTransactionHistory = async (req, res, next) => {
                 // FIX (BUG-02): Gunakan moment-timezone yang konsisten dengan seluruh codebase.
                 // SEBELUMNYA: Intl.DateTimeFormat berpotensi double-shift jika MySQL session timezone
                 //             WIB (data masuk sebagai string WIB, di-parse Node.js sebagai UTC,
+                // FIX (BUG-02): Gunakan moment-timezone yang konsisten dengan seluruh codebase.
+                // SEBELUMNYA: Intl.DateTimeFormat berpotensi double-shift jika MySQL session timezone
+                //             WIB (data masuk sebagai string WIB, di-parse Node.js sebagai UTC,
                 //             lalu Intl menambah +7 lagi → waktu maju 7 jam ke hari berikutnya).
-                // SESUDAH   : moment(value).tz('Asia/Jakarta') menangani konversi UTC→WIB secara
-                //             benar dan idiomatic — sama dengan checkTimeAnomaly di Transaction model.
+                // SESUDAH   : moment.tz(value, 'YYYY-MM-DD HH:mm:ss', 'Asia/Jakarta') menangani string 
+                //             WIB dari DB dengan benar, mencegah pergeseran 7 jam ganda di server Railway.
                 const dateStr = tx.transaction_datetime
-                    ? moment(tx.transaction_datetime).tz('Asia/Jakarta').format('DD/MM/YYYY HH:mm:ss')
+                    ? moment.tz(tx.transaction_datetime, 'YYYY-MM-DD HH:mm:ss', 'Asia/Jakarta').format('DD/MM/YYYY HH:mm:ss')
                     : '-';
                 
                 const typeStr = tx.transaction_type === 'sell' ? 'Penjualan' : 'Restock';
