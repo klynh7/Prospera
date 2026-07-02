@@ -126,7 +126,11 @@ class ExcelReport extends BaseReport {
                 ];
 
                 if (this.isOwner) {
-                    const marginDec = parseFloat(item.margin.replace('%', '')) / 100;
+                    // FIX (BUG-B04): Guard terhadap margin null/undefined/non-string.
+                    // item.margin bisa null jika produk belum pernah terjual di rentang tanggal tsb.
+                    // Sebelumnya: item.margin.replace('%','') → TypeError crash → file Excel corrupt.
+                    const marginStr = (item.margin || '0%').toString().replace('%', '');
+                    const marginDec = parseFloat(marginStr) / 100;
                     rowData.push(Number(item.profit) || 0, isNaN(marginDec) ? 0 : Number(marginDec));
                 }
 
@@ -221,7 +225,9 @@ class CsvReport extends BaseReport {
                 ];
 
                 if (this.isOwner) {
-                    rowData.push(item.profit, item.margin.replace('%', ''));
+                    // FIX (BUG-B04): Guard terhadap margin null/undefined/non-string (konsisten dengan ExcelReport).
+                    const marginStr = (item.margin || '0%').toString().replace('%', '');
+                    rowData.push(item.profit, marginStr);
                 }
                 
                 writeRow(rowData);
