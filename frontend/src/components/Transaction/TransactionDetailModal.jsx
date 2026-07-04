@@ -52,12 +52,12 @@ export default function TransactionDetailModal({
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px", flexShrink: 0 }}>
           <div>
-            <h3 id="trx-modal-title">Detail Transaksi</h3>
-            <p style={{ margin: 0, color: "var(--bs-gray-500, #9ca3af)" }}>{formatDatetime(selectedTransaction.transaction_datetime)}</p>
+            <h3 id="trx-modal-title" className="text-body fw-bold mb-1">Detail Transaksi</h3>
+            <p className="text-muted" style={{ margin: 0 }}>{formatDatetime(selectedTransaction.transaction_datetime)}</p>
           </div>
         </div>
 
-        <div style={{ marginBottom: "16px", flexShrink: 0 }}>
+        <div className="text-body" style={{ marginBottom: "16px", flexShrink: 0 }}>
           <strong>Total:</strong> {formatRupiah(selectedTransaction.total_amount)} • <strong>Tipe:</strong> {getTransactionTypeLabel(selectedTransaction)}
         </div>
 
@@ -65,12 +65,12 @@ export default function TransactionDetailModal({
           <table className="table-simple" style={{ width: "100%" }} aria-label="Daftar item transaksi">
             <thead>
               <tr style={{ textAlign: "left" }}>
-                <th scope="col" style={{ position: "sticky", top: 0, zIndex: 10, backgroundColor: "var(--bs-modal-bg, #212529)" }}>Produk</th>
-                <th scope="col" style={{ position: "sticky", top: 0, zIndex: 10, backgroundColor: "var(--bs-modal-bg, #212529)" }}>Tipe</th>
-                <th scope="col" style={{ position: "sticky", top: 0, zIndex: 10, backgroundColor: "var(--bs-modal-bg, #212529)" }}>Qty</th>
-                <th scope="col" style={{ position: "sticky", top: 0, zIndex: 10, backgroundColor: "var(--bs-modal-bg, #212529)" }}>Modal</th>
-                <th scope="col" style={{ position: "sticky", top: 0, zIndex: 10, backgroundColor: "var(--bs-modal-bg, #212529)" }}>Harga</th>
-                <th scope="col" style={{ position: "sticky", top: 0, zIndex: 10, backgroundColor: "var(--bs-modal-bg, #212529)" }}>Subtotal</th>
+                <th scope="col" className="bg-body-secondary text-body" style={{ position: "sticky", top: 0, zIndex: 10 }}>Produk</th>
+                <th scope="col" className="bg-body-secondary text-body" style={{ position: "sticky", top: 0, zIndex: 10 }}>Tipe</th>
+                <th scope="col" className="bg-body-secondary text-body" style={{ position: "sticky", top: 0, zIndex: 10 }}>Qty</th>
+                <th scope="col" className="bg-body-secondary text-body" style={{ position: "sticky", top: 0, zIndex: 10 }}>Modal</th>
+                <th scope="col" className="bg-body-secondary text-body" style={{ position: "sticky", top: 0, zIndex: 10 }}>Harga</th>
+                <th scope="col" className="bg-body-secondary text-body" style={{ position: "sticky", top: 0, zIndex: 10 }}>Subtotal</th>
               </tr>
             </thead>
             <tbody>

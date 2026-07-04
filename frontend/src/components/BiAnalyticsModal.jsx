@@ -241,11 +241,11 @@ function SpoilageContent({ data, isLoading }) {
 
 // L2-02: Color coding yang benar — Orange untuk keputusan bisnis, Merah untuk uang hangus
 const MODAL_THEMES = {
-    loss:        { bg: 'bg-warning',  icon: 'fa-tag' },          // Defisit Markdown = keputusan disengaja (orange)
-    transaction: { bg: 'bg-primary',  icon: 'fa-receipt' },
-    pnl:         { bg: 'bg-dark',     icon: 'fa-calculator' },
-    profit:      { bg: 'bg-success',  icon: 'fa-trophy' },
-    spoilage:    { bg: 'bg-danger',   icon: 'fa-trash-alt' }     // Kedaluwarsa = uang hangus absolut (merah)
+    loss:        { bg: 'bg-warning',  text: 'text-dark',  icon: 'fa-tag' },
+    transaction: { bg: 'bg-primary',  text: 'text-white', icon: 'fa-receipt' },
+    pnl:         { bg: 'bg-dark',     text: 'text-white', icon: 'fa-calculator' },
+    profit:      { bg: 'bg-success',  text: 'text-white', icon: 'fa-trophy' },
+    spoilage:    { bg: 'bg-danger',   text: 'text-white', icon: 'fa-trash-alt' }
 };
 
 /**
@@ -271,12 +271,12 @@ export default function BiAnalyticsModal({ modalConfig, closeModal, data, ringka
         <div className="modal" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}>
             <div className="modal-dialog modal-lg modal-dialog-centered">
                 <div className="modal-content border-0 shadow-lg" style={{ maxHeight: "90vh", display: "flex", flexDirection: "column" }}>
-                    <div className={`modal-header text-white ${theme.bg}`} style={{ flexShrink: 0 }}>
-                        <h5 className="modal-title fw-bold">
+                    <div className={`modal-header ${theme.bg} ${theme.text}`} style={{ flexShrink: 0 }}>
+                        <h5 className={`modal-title fw-bold ${theme.text}`}>
                             <i className={`fas ${theme.icon} me-2`}></i>
                             {modalConfig.title}
                         </h5>
-                        <button type="button" className="btn-close btn-close-white" onClick={closeModal}></button>
+                        <button type="button" className={`btn-close ${theme.text === 'text-white' ? 'btn-close-white' : ''}`} onClick={closeModal}></button>
                     </div>
                     
                     <div className="modal-body p-0" style={{ display: "flex", flexDirection: "column", minHeight: 0 }}>
