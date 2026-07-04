@@ -11,7 +11,6 @@ function BiAnalytics() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // PERFORMANCE FIX (F-T06): Pisahkan input state (UI) dari applied state (API)
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [appliedStartDate, setAppliedStartDate] = useState('');
@@ -30,7 +29,7 @@ function BiAnalytics() {
         monthly: [],
         profit: {},
         lossProducts: [],
-        spoilageLogs: []   // FIX (SPOILAGE-01): Log pemusnahan stok expired
+        spoilageLogs: []  
     });
 
     // Debounce: Tunda penerapan filter 500ms setelah user berhenti mengetik
@@ -62,7 +61,6 @@ function BiAnalytics() {
                     apiFetch(`/analytics/monthly${query}`),
                     apiFetch(`/analytics/profit${query}`),
                     apiFetch(`/analytics/loss-products${topProductQuery}`),
-                    // FIX (SPOILAGE-01): Ambil log pemusnahan stok expired
                     apiFetch(`/analytics/spoilage-log${query}`)
                 ]);
 
@@ -97,13 +95,11 @@ function BiAnalytics() {
         qtyDestroyed: data.profit.qty_destroyed || 0
     };
 
-    // L2-03: Hitung persentase terhadap omzet (hindari divisi by zero)
     const pctOfOmzet = (nilai) => {
         if (!ringkasan.penjualan || !nilai) return null;
         return ((nilai / ringkasan.penjualan) * 100).toFixed(1);
     };
 
-    // L2-04: Label periode yang aktif (konteks data untuk owner)
     const formatPeriodLabel = () => {
         if (!appliedStartDate && !appliedEndDate) return 'Sepanjang Waktu';
         const monthNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];

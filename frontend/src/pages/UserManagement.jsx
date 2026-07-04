@@ -62,9 +62,7 @@ export default function UserManagement() {
             showToast("Password minimal 6 karakter.", 'warning');
             return;
         }
-        // FIX (BUG-B07): Tambahkan batas maksimal 64 karakter — konsisten dengan backend (BUG-A04)
-        // dan dengan form Register/Login. Bcrypt hanya memproses 72 byte pertama;
-        // input > 64 karakter tidak menambah keamanan tapi memicu validasi error backend yang membingungkan.
+
         if (password.length > 64) {
             showToast("Password maksimal 64 karakter.", 'warning');
             return;

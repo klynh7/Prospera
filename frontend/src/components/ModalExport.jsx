@@ -13,15 +13,12 @@ function ModalExport() {
         try {
             setExportingType(format);
 
-            // Menggunakan apiFetchBlob terpusat (bukan hardcoded URL)
             const blob = await apiFetchBlob(`/analytics/summary/export/${format}`);
             
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             
-            // Tambahkan timestamp (HH-mm-ss) agar nama file selalu unik, menghindari OS file lock 
-            // jika file dengan nama yang sama sedang terbuka di Microsoft Excel.
             const dateStr = new Date().toISOString().split('T')[0];
             const timeStr = new Date().toTimeString().split(' ')[0].replace(/:/g, '-');
             a.download = `Laporan_Prospera_${dateStr}_${timeStr}.${format === 'excel' ? 'xlsx' : 'csv'}`;
@@ -30,8 +27,6 @@ function ModalExport() {
             document.body.appendChild(a);
             a.click();
             
-            // Tahan elemen <a> dan Blob URL selama 60 detik untuk mencegah race condition 
-            // dengan Windows Defender / Chrome Download Manager.
             setTimeout(() => {
                 if (document.body.contains(a)) {
                     document.body.removeChild(a);

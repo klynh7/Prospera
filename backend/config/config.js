@@ -8,7 +8,7 @@ module.exports = {
     host: process.env.DB_HOST || "127.0.0.1",
     port: process.env.DB_PORT || 3307,
     dialect: "mysql",
-    timezone: "+00:00", // Standarisasi Enterprise UTC
+    timezone: "+00:00", 
     dialectOptions: {
       typeCast: true
     }

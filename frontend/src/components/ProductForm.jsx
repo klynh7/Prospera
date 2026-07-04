@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { apiFetch } from '../utils/api';
-// import Card from './ui/Card';
 import Input from './ui/Input';
 import Button from './ui/Button';
 import { useToast } from '../contexts/ToastContext';
@@ -71,7 +70,6 @@ export default function ProductForm({ selectedProduct, initialData, onSave, onCa
     const onSubmit = async (data) => {
         if (isSubmitting) return;
 
-        // Manual validation for expired_date dependency
         const selectedCategory = categories.find(cat => String(cat.category_id) === String(data.category_id_fk));
         if (selectedCategory && selectedCategory.requires_expired_date && !data.expired_date) {
             showToast(`Kategori "${selectedCategory.category_name}" mewajibkan input Tanggal Kedaluwarsa.`, 'warning');
@@ -90,8 +88,7 @@ export default function ProductForm({ selectedProduct, initialData, onSave, onCa
             });
             if (!selectedProduct) reset();
         } catch {
-            // Error is already handled/toasted by Products.jsx, but if not we can add it here.
-            // Since we rethrow in Products.jsx, we can catch it here if we want.
+            
         } finally {
             setIsSubmitting(false);
         }

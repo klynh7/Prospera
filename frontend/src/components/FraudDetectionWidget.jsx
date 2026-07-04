@@ -44,7 +44,6 @@ function FraudDetectionWidget() {
     };
 
     const submitResolve = async () => {
-        // Lapis 6: Spacebar Trick Sanitization
         if (activeResolution.note.trim() === '') {
             setActiveResolution(prev => ({ ...prev, error: "Catatan tidak boleh kosong atau hanya spasi!" }));
             return;
@@ -59,7 +58,6 @@ function FraudDetectionWidget() {
                 resolution_note: activeResolution.note.trim() 
             });
             await fetchAnomalies();
-            // Penyiaran Alarm: Beritahu seluruh aplikasi bahwa data fraud telah berubah
             window.dispatchEvent(new Event('fraudDataUpdated'));
             setActiveResolution({ ticket_id: null, status: null, note: '', error: null }); 
         } catch (err) {

@@ -1,22 +1,8 @@
-/**
- * BiAnalyticsModal.jsx — Modal komponen untuk halaman BI Analytics
- * REFACTOR (F-T01): Diekstrak dari BiAnalytics.jsx (monster 425 baris)
- * 
- * Menangani rendering 5 tipe modal:
- * - 'pnl'         → Kalkulasi Laba Rugi (P&L) — termasuk spoilage
- * - 'loss'        → Rincian Barang Rugi (jual di bawah modal)
- * - 'spoilage'    → Rincian Kerugian Kedaluwarsa (FIX SPOILAGE-01)
- * - 'profit'      → Rincian Penyumbang Laba
- * - 'transaction'  → Status Transaksi Breakdown
- */
-
 import React, { useState, useEffect } from 'react';
 import { formatRupiah } from '../utils/format';
 import { formatDatetime } from '../utils/format';
 
-/**
- * Render konten P&L (Profit & Loss) — FIX (SPOILAGE-01): Tampilkan 2 sumber kerugian
- */
+
 function PnlContent({ ringkasan }) {
     return (
         <div className="p-4 bg-body" style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0, overflowY: "auto" }}>
@@ -30,12 +16,10 @@ function PnlContent({ ringkasan }) {
                 <span className="text-muted" style={{fontSize: "16px"}}>Laba Kotor (Untung)</span>
                 <span className="fw-bold text-success" style={{fontSize: "16px"}}>+{formatRupiah(ringkasan.labaKotor)}</span>
             </div>
-            {/* L2-01: Re-label konsisten dengan card di dashboard */}
             <div className="d-flex justify-content-between mb-2">
                 <span className="text-muted" style={{fontSize: "16px"}}>💸 Defisit Markdown <small className="text-muted" style={{fontSize:'11px'}}>(jual di bawah modal)</small></span>
                 <span className="fw-bold" style={{fontSize: "16px", color: '#b45309'}}>-{formatRupiah(ringkasan.rugi)}</span>
             </div>
-            {/* FIX (SPOILAGE-01): Tampilkan kerugian kedaluwarsa secara eksplisit */}
             <div className="d-flex justify-content-between mb-3 pb-3 border-bottom border-2">
                 <span className="text-muted" style={{fontSize: "16px"}}>
                     🗑 Kerugian Kedaluwarsa
@@ -148,7 +132,6 @@ function TableContent({ type, data, isLoading }) {
     );
 }
 
-// L3-02: CSV export (client-side) — data sudah ada di state, tidak perlu endpoint baru
 function exportSpoilageCSV(logs) {
     if (!logs || logs.length === 0) return;
     const header = ['Nama Produk', 'Total Qty Musnahkan', 'Jumlah Kejadian', 'Total Kerugian (Rp)', 'Terakhir Dimusnahkan'];
@@ -173,7 +156,6 @@ function SpoilageContent({ data, isLoading }) {
     const logs = data.spoilageLogs || [];
     return (
         <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
-            {/* L3-02: Tombol export di atas tabel, TETAP STICKY */}
             {logs.length > 0 && (
                 <div className="d-flex justify-content-between align-items-center px-4 py-3 bg-body border-bottom" style={{ flexShrink: 0 }}>
                     <small className="text-muted">
@@ -239,7 +221,6 @@ function SpoilageContent({ data, isLoading }) {
     );
 }
 
-// L2-02: Color coding yang benar — Orange untuk keputusan bisnis, Merah untuk uang hangus
 const MODAL_THEMES = {
     loss:        { bg: 'bg-warning',  text: 'text-dark',  icon: 'fa-tag' },
     transaction: { bg: 'bg-primary',  text: 'text-white', icon: 'fa-receipt' },
@@ -283,7 +264,6 @@ export default function BiAnalyticsModal({ modalConfig, closeModal, data, ringka
                         {modalConfig.type === 'pnl' ? (
                             <PnlContent ringkasan={ringkasan} />
                         ) : modalConfig.type === 'spoilage' ? (
-                            // FIX (SPOILAGE-01): Render tabel rincian pemusnahan stok
                             <SpoilageContent data={data} isLoading={isLoading} />
                         ) : (
                             <TableContent type={modalConfig.type} data={data} isLoading={isLoading} />
