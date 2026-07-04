@@ -61,95 +61,89 @@ function PnlContent({ ringkasan }) {
  * Render tabel berdasarkan tipe modal (loss, profit, transaction)
  */
 function TableContent({ type, data, isLoading }) {
-    const thStyle = { position: "sticky", top: 0, zIndex: 10, backgroundColor: "var(--bs-table-bg, #e2e3e5)" };
     return (
-        <div className="table-responsive" style={{ flex: 1, overflowY: "auto", minHeight: 0, paddingRight: "8px" }}>
-            <table className="table table-striped table-hover align-middle mb-0">
-                <thead className="table-secondary">
-                    {type === 'loss' ? (
-                        <tr className="small text-muted text-uppercase">
-                            <th className="ps-4" style={thStyle}>Nama Barang</th>
-                            <th className="text-center" style={thStyle}>Vol</th>
-                            <th className="text-end" style={thStyle}>Modal/Unit</th>
-                            <th className="text-end" style={thStyle}>Jual/Unit</th>
-                            <th className="text-end pe-4" style={thStyle}>Total Rugi</th>
-                        </tr>
-                    ) : type === 'profit' ? (
-                        <tr className="small text-muted text-uppercase">
-                            <th className="ps-4" style={thStyle}>Nama Barang</th>
-                            <th className="text-center" style={thStyle}>Vol</th>
-                            <th className="text-end" style={thStyle}>Total Omzet</th>
-                            <th className="text-center" style={thStyle}>Margin</th>
-                            <th className="text-end pe-4" style={thStyle}>Total Laba</th>
-                        </tr>
-                    ) : (
-                        <tr className="small text-muted text-uppercase">
-                            <th className="ps-4" style={thStyle}>Status Transaksi</th>
-                            <th className="text-end pe-4" style={thStyle}>Total Struk</th>
-                        </tr>
-                    )}
-                </thead>
-                <tbody>
-                    {isLoading ? (
-                        Array.from({ length: 5 }).map((_, idx) => (
-                            <tr key={`skel-${idx}`}>
-                                <td className="ps-4"><div className="placeholder-glow"><span className="placeholder col-8 bg-secondary rounded"></span></div></td>
-                                {type === 'loss' || type === 'profit' ? (
-                                    <>
-                                        <td className="text-center"><div className="placeholder-glow"><span className="placeholder col-6 bg-secondary rounded"></span></div></td>
-                                        <td className="text-end"><div className="placeholder-glow"><span className="placeholder col-8 bg-secondary rounded"></span></div></td>
-                                        <td className="text-center"><div className="placeholder-glow"><span className="placeholder col-6 bg-secondary rounded"></span></div></td>
-                                    </>
-                                ) : null}
-                                <td className="text-end pe-4"><div className="placeholder-glow"><span className="placeholder col-5 bg-secondary rounded"></span></div></td>
-                            </tr>
-                        ))
-                    ) : type === 'loss' && data.lossProducts.length > 0 ? (
-                        data.lossProducts.map((item, idx) => (
-                            <tr key={idx}>
-                                <td className="ps-4 fw-bold text-body">{item.product_name}</td>
-                                <td className="text-center">{item.sold}</td>
-                                <td className="text-end text-muted">{formatRupiah(item.modal)}</td>
-                                <td className="text-end text-muted">{formatRupiah(item.harga_jual)}</td>
-                                <td className="text-end pe-4 text-danger fw-bold">-{formatRupiah(item.rugi)}</td>
-                            </tr>
-                        ))
-                    ) : type === 'loss' ? (
-                        <tr><td colSpan="5" className="text-center py-4">Tidak ada barang yang dijual rugi. Mantap!</td></tr>
-                    ) : null}
-
-                    {type === 'profit' && data.products.length > 0 ? (
-                        data.products.map((item, idx) => (
-                            <tr key={idx}>
-                                <td className="ps-4 fw-bold text-body">{item.product_name}</td>
-                                <td className="text-center">{item.sold}</td>
-                                <td className="text-end text-muted">{formatRupiah(item.revenue)}</td>
-                                <td className="text-center text-primary fw-bold">{item.margin}</td>
-                                <td className="text-end pe-4 text-success fw-bold">{formatRupiah(item.laba)}</td>
-                            </tr>
-                        ))
-                    ) : type === 'profit' ? (
-                        <tr><td colSpan="5" className="text-center py-4">Belum ada data penjualan.</td></tr>
-                    ) : null}
-
-                    {type === 'transaction' && (
-                        <>
-                            <tr>
-                                <td className="ps-4 fw-bold text-success"><i className="fas fa-check-circle me-2"></i>Berhasil (Success)</td>
-                                <td className="text-end pe-4 fw-bold text-body">{data.status_breakdown?.success || 0}</td>
-                            </tr>
-                            <tr>
-                                <td className="ps-4 fw-bold text-warning"><i className="fas fa-clock me-2"></i>Tertunda (Pending)</td>
-                                <td className="text-end pe-4 fw-bold text-body">{data.status_breakdown?.pending || 0}</td>
-                            </tr>
-                            <tr>
-                                <td className="ps-4 fw-bold text-danger"><i className="fas fa-times-circle me-2"></i>Dibatalkan (Cancelled)</td>
-                                <td className="text-end pe-4 fw-bold text-body">{data.status_breakdown?.cancelled || 0}</td>
-                            </tr>
-                        </>
-                    )}
-                </tbody>
-            </table>
+        <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
+            <div className="p-4 bg-body" style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
+                {isLoading ? (
+                    Array.from({ length: 3 }).map((_, idx) => (
+                        <div key={`skel-${idx}`} className="mb-3 p-3 rounded bg-body-secondary border placeholder-glow">
+                            <div className="d-flex justify-content-between mb-2 border-bottom pb-2">
+                                <span className="placeholder col-5 bg-secondary rounded"></span>
+                                <span className="placeholder col-3 bg-secondary rounded"></span>
+                            </div>
+                            <div className="d-flex justify-content-between">
+                                <span className="placeholder col-4 bg-secondary rounded"></span>
+                                <span className="placeholder col-4 bg-secondary rounded"></span>
+                            </div>
+                        </div>
+                    ))
+                ) : type === 'loss' && data.lossProducts.length > 0 ? (
+                    data.lossProducts.map((item, idx) => (
+                        <div key={idx} className="mb-3 p-3 rounded bg-body-secondary border">
+                            <div className="d-flex justify-content-between mb-2 border-bottom pb-2">
+                                <span className="fw-bold text-body">{item.product_name}</span>
+                                <div>
+                                    <small className="text-muted me-1">Total Rugi:</small>
+                                    <span className="fw-bold text-danger">-{formatRupiah(item.rugi)}</span>
+                                </div>
+                            </div>
+                            <div className="d-flex justify-content-between text-muted" style={{fontSize: "13px"}}>
+                                <span><small>Terjual:</small> <strong className="text-body">{item.sold} unit</strong></span>
+                                <span><small>Modal:</small> {formatRupiah(item.modal)} <span className="mx-1">|</span> <small>Jual:</small> {formatRupiah(item.harga_jual)}</span>
+                            </div>
+                        </div>
+                    ))
+                ) : type === 'loss' ? (
+                    <div className="text-center py-5">
+                        <div className="mb-2"><i className="fas fa-check-circle text-success" style={{fontSize: '2rem'}}></i></div>
+                        <p className="fw-bold text-success mb-1">Mantap! Tidak ada barang yang dijual rugi.</p>
+                    </div>
+                ) : type === 'profit' && data.products.length > 0 ? (
+                    data.products.map((item, idx) => (
+                        <div key={idx} className="mb-3 p-3 rounded bg-body-secondary border">
+                            <div className="d-flex justify-content-between mb-2 border-bottom pb-2">
+                                <span className="fw-bold text-body">{item.product_name}</span>
+                                <div>
+                                    <small className="text-muted me-1">Total Laba:</small>
+                                    <span className="fw-bold text-success">+{formatRupiah(item.laba)}</span>
+                                </div>
+                            </div>
+                            <div className="d-flex justify-content-between text-muted" style={{fontSize: "13px"}}>
+                                <span><small>Terjual:</small> <strong className="text-body">{item.sold} unit</strong></span>
+                                <span><small>Omzet:</small> {formatRupiah(item.revenue)} <span className="mx-1">|</span> <small>Margin:</small> <span className="text-primary fw-bold">{item.margin}</span></span>
+                            </div>
+                        </div>
+                    ))
+                ) : type === 'profit' ? (
+                    <div className="text-center py-5">
+                        <p className="text-muted mb-0">Belum ada data penjualan.</p>
+                    </div>
+                ) : type === 'transaction' ? (
+                    <div>
+                        <div className="d-flex justify-content-between align-items-center mb-3 p-3 rounded bg-body-secondary border">
+                            <span className="fw-bold text-success"><i className="fas fa-check-circle me-2"></i>Berhasil (Success)</span>
+                            <div>
+                                <small className="text-muted me-2">Total Struk:</small>
+                                <span className="fw-bold text-body" style={{fontSize: "16px"}}>{data.status_breakdown?.success || 0}</span>
+                            </div>
+                        </div>
+                        <div className="d-flex justify-content-between align-items-center mb-3 p-3 rounded bg-body-secondary border">
+                            <span className="fw-bold text-warning"><i className="fas fa-clock me-2"></i>Tertunda (Pending)</span>
+                            <div>
+                                <small className="text-muted me-2">Total Struk:</small>
+                                <span className="fw-bold text-body" style={{fontSize: "16px"}}>{data.status_breakdown?.pending || 0}</span>
+                            </div>
+                        </div>
+                        <div className="d-flex justify-content-between align-items-center p-3 rounded bg-body-secondary border">
+                            <span className="fw-bold text-danger"><i className="fas fa-times-circle me-2"></i>Dibatalkan (Cancelled)</span>
+                            <div>
+                                <small className="text-muted me-2">Total Struk:</small>
+                                <span className="fw-bold text-body" style={{fontSize: "16px"}}>{data.status_breakdown?.cancelled || 0}</span>
+                            </div>
+                        </div>
+                    </div>
+                ) : null}
+            </div>
         </div>
     );
 }
@@ -175,16 +169,13 @@ function exportSpoilageCSV(logs) {
     URL.revokeObjectURL(url);
 }
 
-// FIX (SPOILAGE-01 + L1-03 + L3-02): Komponen tabel kerugian kedaluwarsa
-// Data sekarang GROUPED by product (top 50) — anti-DOM-explosion
 function SpoilageContent({ data, isLoading }) {
     const logs = data.spoilageLogs || [];
-    const thStyle = { position: "sticky", top: 0, zIndex: 10, backgroundColor: "var(--bs-table-bg, #e2e3e5)" };
     return (
         <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
-            {/* L3-02: Tombol export di atas tabel */}
+            {/* L3-02: Tombol export di atas tabel, TETAP STICKY */}
             {logs.length > 0 && (
-                <div className="d-flex justify-content-between align-items-center px-3 py-2 border-bottom" style={{ flexShrink: 0 }}>
+                <div className="d-flex justify-content-between align-items-center px-4 py-3 bg-body border-bottom" style={{ flexShrink: 0 }}>
                     <small className="text-muted">
                         <i className="fas fa-layer-group me-1"></i>
                         Top {logs.length} produk (dikelompokkan berdasarkan total kerugian)
@@ -199,57 +190,50 @@ function SpoilageContent({ data, isLoading }) {
                     </button>
                 </div>
             )}
-            <div className="table-responsive" style={{ flex: 1, overflowY: "auto", minHeight: 0, paddingRight: "8px" }}>
-                <table className="table table-striped table-hover align-middle mb-0">
-                    <thead className="table-secondary">
-                        <tr className="small text-muted text-uppercase">
-                            <th className="ps-4" style={thStyle}>Nama Produk</th>
-                            <th className="text-center" style={thStyle}>Qty Musnahkan</th>
-                            <th className="text-center" style={thStyle}>Kejadian</th>
-                            <th className="text-end" style={thStyle}>Total Kerugian</th>
-                            <th className="text-end pe-4" style={thStyle}>Terakhir Dimusnahkan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {isLoading ? (
-                            Array.from({ length: 5 }).map((_, idx) => (
-                                <tr key={`skel-spoilage-${idx}`}>
-                                    <td className="ps-4"><div className="placeholder-glow"><span className="placeholder col-8 bg-secondary rounded"></span></div></td>
-                                    <td className="text-center"><div className="placeholder-glow"><span className="placeholder col-6 bg-secondary rounded"></span></div></td>
-                                    <td className="text-center"><div className="placeholder-glow"><span className="placeholder col-4 bg-secondary rounded"></span></div></td>
-                                    <td className="text-end"><div className="placeholder-glow"><span className="placeholder col-8 bg-secondary rounded"></span></div></td>
-                                    <td className="text-end pe-4"><div className="placeholder-glow"><span className="placeholder col-6 bg-secondary rounded"></span></div></td>
-                                </tr>
-                            ))
-                        ) : logs.length > 0 ? logs.map((log, idx) => (
-                            <tr key={idx}>
-                                <td className="ps-4 fw-bold text-body">{log.product_name}</td>
-                                {/* L1-03: total_qty = SUM grouped, bukan qty per event */}
-                                <td className="text-center text-secondary">{(log.total_qty || 0).toLocaleString('id-ID')} unit</td>
-                                <td className="text-center">
-                                    <span className="badge rounded-pill bg-danger bg-opacity-10 text-danger" style={{fontSize: '11px'}}>
-                                        {log.event_count}x
-                                    </span>
-                                </td>
-                                <td className="text-end text-danger fw-bold">-{formatRupiah(log.total_loss)}</td>
-                                <td className="text-end pe-4 text-muted small">
-                                    {log.last_destroyed_at
-                                        ? new Date(log.last_destroyed_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
-                                        : '-'
-                                    }
-                                </td>
-                            </tr>
-                        )) : (
-                            <tr>
-                                <td colSpan="5" className="text-center py-5">
-                                    <div className="mb-2"><i className="fas fa-check-circle text-success" style={{fontSize: '2rem'}}></i></div>
-                                    <p className="fw-bold text-success mb-1">Hebat! Tidak ada stok yang dimusnahkan.</p>
-                                    <p className="text-muted small mb-0">Manajemen stok berjalan optimal di periode ini. 🎉</p>
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+            
+            {/* Scroll Container (Natural Scroll) */}
+            <div className="p-4 bg-body" style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
+                {isLoading ? (
+                    Array.from({ length: 3 }).map((_, idx) => (
+                        <div key={`skel-spoilage-${idx}`} className="mb-3 p-3 rounded bg-body-secondary border placeholder-glow">
+                            <div className="d-flex justify-content-between mb-2 border-bottom pb-2">
+                                <span className="placeholder col-5 bg-secondary rounded"></span>
+                                <span className="placeholder col-3 bg-secondary rounded"></span>
+                            </div>
+                            <div className="d-flex justify-content-between">
+                                <span className="placeholder col-4 bg-secondary rounded"></span>
+                                <span className="placeholder col-4 bg-secondary rounded"></span>
+                            </div>
+                        </div>
+                    ))
+                ) : logs.length > 0 ? (
+                    logs.map((log, idx) => (
+                        <div key={idx} className="mb-3 p-3 rounded bg-body-secondary border">
+                            <div className="d-flex justify-content-between mb-2 border-bottom pb-2">
+                                <span className="fw-bold text-body">{log.product_name}</span>
+                                <div>
+                                    <small className="text-muted me-1">Total Kerugian:</small>
+                                    <span className="fw-bold text-danger">-{formatRupiah(log.total_loss)}</span>
+                                </div>
+                            </div>
+                            <div className="d-flex justify-content-between text-muted" style={{fontSize: "13px"}}>
+                                <span>
+                                    <small>Musnah:</small> <strong className="text-secondary">{(log.total_qty || 0).toLocaleString('id-ID')} unit</strong> 
+                                    <span className="badge rounded-pill bg-danger bg-opacity-10 text-danger ms-2" style={{fontSize: '10px'}}>{log.event_count}x kejadian</span>
+                                </span>
+                                <span>
+                                    <small>Terakhir:</small> {log.last_destroyed_at ? new Date(log.last_destroyed_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'}
+                                </span>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <div className="text-center py-5">
+                        <div className="mb-2"><i className="fas fa-check-circle text-success" style={{fontSize: '2rem'}}></i></div>
+                        <p className="fw-bold text-success mb-1">Hebat! Tidak ada stok yang dimusnahkan.</p>
+                        <p className="text-muted small mb-0">Manajemen stok berjalan optimal di periode ini. 🎉</p>
+                    </div>
+                )}
             </div>
         </div>
     );
