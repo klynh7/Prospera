@@ -477,7 +477,7 @@ const exportTransactionHistory = async (req, res, next) => {
                 // SEBELUMNYA: Intl.DateTimeFormat berpotensi double-shift jika MySQL session timezone
                 //             WIB (data masuk sebagai string WIB, di-parse Node.js sebagai UTC,
                 const dateStr = tx.transaction_datetime
-                    ? moment.utc(tx.transaction_datetime).format('DD/MM/YYYY HH:mm:ss')
+                    ? moment(tx.transaction_datetime).tz('Asia/Jakarta').format('DD/MM/YYYY HH:mm:ss')
                     : '-';
                 const typeStr = tx.transaction_type === 'sell' ? 'Penjualan' : 'Restock';
                 const statusStr = tx.status === 'success' ? 'Sukses' : (tx.status === 'cancelled' ? 'Dibatalkan' : tx.status);
