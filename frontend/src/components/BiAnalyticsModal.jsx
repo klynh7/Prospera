@@ -18,7 +18,7 @@ import { formatDatetime } from '../utils/format';
  */
 function PnlContent({ ringkasan }) {
     return (
-        <div className="p-4 bg-body">
+        <div className="p-4 bg-body" style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0, overflowY: "auto" }}>
             <div className="mb-4 p-3 rounded bg-body-secondary border">
                 <span className="d-block text-muted mb-1" style={{fontSize: "14px"}}>Total Pendapatan Kotor (Omzet)</span>
                 <span className="fw-bold text-body" style={{fontSize: "20px"}}>{formatRupiah(ringkasan.penjualan)}</span>
@@ -60,30 +60,31 @@ function PnlContent({ ringkasan }) {
  * Render tabel berdasarkan tipe modal (loss, profit, transaction)
  */
 function TableContent({ type, data }) {
+    const thStyle = { position: "sticky", top: 0, zIndex: 10, backgroundColor: "var(--bs-table-bg, #e2e3e5)" };
     return (
-        <div className="table-responsive">
+        <div className="table-responsive" style={{ flex: 1, overflowY: "auto", minHeight: 0, paddingRight: "8px" }}>
             <table className="table table-striped table-hover align-middle mb-0">
                 <thead className="table-secondary">
                     {type === 'loss' ? (
                         <tr className="small text-muted text-uppercase">
-                            <th className="ps-4">Nama Barang</th>
-                            <th className="text-center">Vol</th>
-                            <th className="text-end">Modal/Unit</th>
-                            <th className="text-end">Jual/Unit</th>
-                            <th className="text-end pe-4">Total Rugi</th>
+                            <th className="ps-4" style={thStyle}>Nama Barang</th>
+                            <th className="text-center" style={thStyle}>Vol</th>
+                            <th className="text-end" style={thStyle}>Modal/Unit</th>
+                            <th className="text-end" style={thStyle}>Jual/Unit</th>
+                            <th className="text-end pe-4" style={thStyle}>Total Rugi</th>
                         </tr>
                     ) : type === 'profit' ? (
                         <tr className="small text-muted text-uppercase">
-                            <th className="ps-4">Nama Barang</th>
-                            <th className="text-center">Vol</th>
-                            <th className="text-end">Total Omzet</th>
-                            <th className="text-center">Margin</th>
-                            <th className="text-end pe-4">Total Laba</th>
+                            <th className="ps-4" style={thStyle}>Nama Barang</th>
+                            <th className="text-center" style={thStyle}>Vol</th>
+                            <th className="text-end" style={thStyle}>Total Omzet</th>
+                            <th className="text-center" style={thStyle}>Margin</th>
+                            <th className="text-end pe-4" style={thStyle}>Total Laba</th>
                         </tr>
                     ) : (
                         <tr className="small text-muted text-uppercase">
-                            <th className="ps-4">Status Transaksi</th>
-                            <th className="text-end pe-4">Total Struk</th>
+                            <th className="ps-4" style={thStyle}>Status Transaksi</th>
+                            <th className="text-end pe-4" style={thStyle}>Total Struk</th>
                         </tr>
                     )}
                 </thead>
@@ -163,11 +164,12 @@ function exportSpoilageCSV(logs) {
 // Data sekarang GROUPED by product (top 50) — anti-DOM-explosion
 function SpoilageContent({ data }) {
     const logs = data.spoilageLogs || [];
+    const thStyle = { position: "sticky", top: 0, zIndex: 10, backgroundColor: "var(--bs-table-bg, #e2e3e5)" };
     return (
-        <div>
+        <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
             {/* L3-02: Tombol export di atas tabel */}
             {logs.length > 0 && (
-                <div className="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+                <div className="d-flex justify-content-between align-items-center px-3 py-2 border-bottom" style={{ flexShrink: 0 }}>
                     <small className="text-muted">
                         <i className="fas fa-layer-group me-1"></i>
                         Top {logs.length} produk (dikelompokkan berdasarkan total kerugian)
@@ -182,15 +184,15 @@ function SpoilageContent({ data }) {
                     </button>
                 </div>
             )}
-            <div className="table-responsive">
+            <div className="table-responsive" style={{ flex: 1, overflowY: "auto", minHeight: 0, paddingRight: "8px" }}>
                 <table className="table table-striped table-hover align-middle mb-0">
                     <thead className="table-secondary">
                         <tr className="small text-muted text-uppercase">
-                            <th className="ps-4">Nama Produk</th>
-                            <th className="text-center">Qty Musnahkan</th>
-                            <th className="text-center">Kejadian</th>
-                            <th className="text-end">Total Kerugian</th>
-                            <th className="text-end pe-4">Terakhir Dimusnahkan</th>
+                            <th className="ps-4" style={thStyle}>Nama Produk</th>
+                            <th className="text-center" style={thStyle}>Qty Musnahkan</th>
+                            <th className="text-center" style={thStyle}>Kejadian</th>
+                            <th className="text-end" style={thStyle}>Total Kerugian</th>
+                            <th className="text-end pe-4" style={thStyle}>Terakhir Dimusnahkan</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -249,8 +251,8 @@ export default function BiAnalyticsModal({ modalConfig, closeModal, data, ringka
     return (
         <div className="modal" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}>
             <div className="modal-dialog modal-lg modal-dialog-centered">
-                <div className="modal-content border-0 shadow-lg">
-                    <div className={`modal-header text-white ${theme.bg}`}>
+                <div className="modal-content border-0 shadow-lg" style={{ maxHeight: "90vh", display: "flex", flexDirection: "column" }}>
+                    <div className={`modal-header text-white ${theme.bg}`} style={{ flexShrink: 0 }}>
                         <h5 className="modal-title fw-bold">
                             <i className={`fas ${theme.icon} me-2`}></i>
                             {modalConfig.title}
@@ -258,7 +260,7 @@ export default function BiAnalyticsModal({ modalConfig, closeModal, data, ringka
                         <button type="button" className="btn-close btn-close-white" onClick={closeModal}></button>
                     </div>
                     
-                    <div className="modal-body p-0">
+                    <div className="modal-body p-0" style={{ display: "flex", flexDirection: "column", minHeight: 0 }}>
                         {modalConfig.type === 'pnl' ? (
                             <PnlContent ringkasan={ringkasan} />
                         ) : modalConfig.type === 'spoilage' ? (
@@ -268,7 +270,7 @@ export default function BiAnalyticsModal({ modalConfig, closeModal, data, ringka
                             <TableContent type={modalConfig.type} data={data} />
                         )}
                     </div>
-                    <div className="modal-footer bg-body border-0">
+                    <div className="modal-footer bg-body border-0" style={{ flexShrink: 0 }}>
                         <button type="button" className="btn btn-secondary" onClick={closeModal}>Tutup</button>
                     </div>
                 </div>
