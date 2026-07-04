@@ -226,7 +226,9 @@ export function useCart(products, fetchProducts, fetchHistory) {
             setOvertimeModal({ isOpen: false, errorMsg: '' });
             await saveTransaction();
         } catch (err) {
-            throw new Error(formatError(err));
+            const errorMessage = formatError(err);
+            showToast(errorMessage, "danger");
+            throw new Error(errorMessage);
         }
     };
     return {
