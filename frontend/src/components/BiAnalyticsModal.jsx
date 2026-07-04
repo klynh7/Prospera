@@ -10,6 +10,7 @@
  * - 'transaction'  → Status Transaksi Breakdown
  */
 
+import React, { useState, useEffect } from 'react';
 import { formatRupiah } from '../utils/format';
 import { formatDatetime } from '../utils/format';
 
@@ -59,7 +60,7 @@ function PnlContent({ ringkasan }) {
 /**
  * Render tabel berdasarkan tipe modal (loss, profit, transaction)
  */
-function TableContent({ type, data }) {
+function TableContent({ type, data, isLoading }) {
     const thStyle = { position: "sticky", top: 0, zIndex: 10, backgroundColor: "var(--bs-table-bg, #e2e3e5)" };
     return (
         <div className="table-responsive" style={{ flex: 1, overflowY: "auto", minHeight: 0, paddingRight: "8px" }}>
@@ -89,7 +90,21 @@ function TableContent({ type, data }) {
                     )}
                 </thead>
                 <tbody>
-                    {type === 'loss' && data.lossProducts.length > 0 ? (
+                    {isLoading ? (
+                        Array.from({ length: 5 }).map((_, idx) => (
+                            <tr key={`skel-${idx}`}>
+                                <td className="ps-4"><div className="placeholder-glow"><span className="placeholder col-8 bg-secondary rounded"></span></div></td>
+                                {type === 'loss' || type === 'profit' ? (
+                                    <>
+                                        <td className="text-center"><div className="placeholder-glow"><span className="placeholder col-6 bg-secondary rounded"></span></div></td>
+                                        <td className="text-end"><div className="placeholder-glow"><span className="placeholder col-8 bg-secondary rounded"></span></div></td>
+                                        <td className="text-center"><div className="placeholder-glow"><span className="placeholder col-6 bg-secondary rounded"></span></div></td>
+                                    </>
+                                ) : null}
+                                <td className="text-end pe-4"><div className="placeholder-glow"><span className="placeholder col-5 bg-secondary rounded"></span></div></td>
+                            </tr>
+                        ))
+                    ) : type === 'loss' && data.lossProducts.length > 0 ? (
                         data.lossProducts.map((item, idx) => (
                             <tr key={idx}>
                                 <td className="ps-4 fw-bold text-body">{item.product_name}</td>
@@ -162,7 +177,7 @@ function exportSpoilageCSV(logs) {
 
 // FIX (SPOILAGE-01 + L1-03 + L3-02): Komponen tabel kerugian kedaluwarsa
 // Data sekarang GROUPED by product (top 50) — anti-DOM-explosion
-function SpoilageContent({ data }) {
+function SpoilageContent({ data, isLoading }) {
     const logs = data.spoilageLogs || [];
     const thStyle = { position: "sticky", top: 0, zIndex: 10, backgroundColor: "var(--bs-table-bg, #e2e3e5)" };
     return (
@@ -196,7 +211,17 @@ function SpoilageContent({ data }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {logs.length > 0 ? logs.map((log, idx) => (
+                        {isLoading ? (
+                            Array.from({ length: 5 }).map((_, idx) => (
+                                <tr key={`skel-spoilage-${idx}`}>
+                                    <td className="ps-4"><div className="placeholder-glow"><span className="placeholder col-8 bg-secondary rounded"></span></div></td>
+                                    <td className="text-center"><div className="placeholder-glow"><span className="placeholder col-6 bg-secondary rounded"></span></div></td>
+                                    <td className="text-center"><div className="placeholder-glow"><span className="placeholder col-4 bg-secondary rounded"></span></div></td>
+                                    <td className="text-end"><div className="placeholder-glow"><span className="placeholder col-8 bg-secondary rounded"></span></div></td>
+                                    <td className="text-end pe-4"><div className="placeholder-glow"><span className="placeholder col-6 bg-secondary rounded"></span></div></td>
+                                </tr>
+                            ))
+                        ) : logs.length > 0 ? logs.map((log, idx) => (
                             <tr key={idx}>
                                 <td className="ps-4 fw-bold text-body">{log.product_name}</td>
                                 {/* L1-03: total_qty = SUM grouped, bukan qty per event */}
@@ -244,6 +269,16 @@ const MODAL_THEMES = {
  * @param {{ modalConfig, closeModal, data, ringkasan }} props
  */
 export default function BiAnalyticsModal({ modalConfig, closeModal, data, ringkasan }) {
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (modalConfig.isOpen) {
+            setIsLoading(true);
+            const timer = setTimeout(() => setIsLoading(false), 400); // Skeleton loading effect
+            return () => clearTimeout(timer);
+        }
+    }, [modalConfig.isOpen]);
+
     if (!modalConfig.isOpen) return null;
 
     const theme = MODAL_THEMES[modalConfig.type] || MODAL_THEMES.profit;
@@ -265,9 +300,9 @@ export default function BiAnalyticsModal({ modalConfig, closeModal, data, ringka
                             <PnlContent ringkasan={ringkasan} />
                         ) : modalConfig.type === 'spoilage' ? (
                             // FIX (SPOILAGE-01): Render tabel rincian pemusnahan stok
-                            <SpoilageContent data={data} />
+                            <SpoilageContent data={data} isLoading={isLoading} />
                         ) : (
-                            <TableContent type={modalConfig.type} data={data} />
+                            <TableContent type={modalConfig.type} data={data} isLoading={isLoading} />
                         )}
                     </div>
                     <div className="modal-footer bg-body border-0" style={{ flexShrink: 0 }}>
